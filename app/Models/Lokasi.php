@@ -14,7 +14,8 @@ class Lokasi extends Model
         'kode_lokasi',
         'nama_lokasi',
         'keterangan',
-        'tipe',   
+        'tipe',
+        'alamat',   
         'kapasitas', 
     ];
 

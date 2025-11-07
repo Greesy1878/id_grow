@@ -12,18 +12,14 @@ use App\Models\ProdukLokasi;
 
 class MutasiApiController extends Controller
 {
-    /**
-     * Tampilkan semua data mutasi beserta relasi.
-     */
+    // Tampilkan semua mutasi
     public function index()
     {
         $mutasis = Mutasi::with([
             'user:id,name',
             'produkLokasi.produk:id,nama_produk',
             'produkLokasi.lokasi:id,nama_lokasi'
-        ])
-            ->orderBy('tanggal', 'desc')
-            ->get();
+        ])->orderBy('tanggal', 'desc')->get();
 
         return response()->json([
             'status' => true,
@@ -32,9 +28,7 @@ class MutasiApiController extends Controller
         ]);
     }
 
-    /**
-     * Simpan mutasi baru dan update stok.
-     */
+    // Simpan mutasi baru & update stok pivot
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -48,7 +42,6 @@ class MutasiApiController extends Controller
 
         DB::beginTransaction();
         try {
-            // Ambil atau buat pivot Produk-Lokasi
             $produkLokasi = ProdukLokasi::firstOrCreate(
                 [
                     'produk_id' => $validated['produk_id'],
@@ -69,6 +62,7 @@ class MutasiApiController extends Controller
                 }
                 $produkLokasi->stok -= $validated['jumlah'];
             }
+
             $produkLokasi->save();
 
             // Simpan mutasi
@@ -86,11 +80,15 @@ class MutasiApiController extends Controller
             return response()->json([
                 'status' => true,
                 'message' => 'Mutasi berhasil ditambahkan',
-                'data' => $mutasi->load(['user', 'produkLokasi.produk', 'produkLokasi.lokasi'])
+                'data' => $mutasi->load([
+                    'user:id,name',
+                    'produkLokasi.produk:id,nama_produk',
+                    'produkLokasi.lokasi:id,nama_lokasi'
+                ])
             ], 201);
+
         } catch (\Exception $e) {
             DB::rollBack();
-
             return response()->json([
                 'status' => false,
                 'message' => 'Terjadi kesalahan: ' . $e->getMessage()
@@ -98,17 +96,16 @@ class MutasiApiController extends Controller
         }
     }
 
-    /**
-     * Riwayat mutasi berdasarkan produk tertentu.
-     */
+    // Riwayat mutasi berdasarkan produk
     public function historyByProduk($produkId)
     {
-        $mutasis = Mutasi::with(['user:id,name', 'produkLokasi.lokasi:id,nama_lokasi'])
-            ->whereHas('produkLokasi.produk', function ($q) use ($produkId) {
-                $q->where('id', $produkId);
-            })
-            ->orderBy('tanggal', 'desc')
-            ->get();
+        $mutasis = Mutasi::with([
+            'user:id,name',
+            'produkLokasi.produk:id,nama_produk',
+            'produkLokasi.lokasi:id,nama_lokasi'
+        ])->whereHas('produkLokasi.produk', fn($q) => $q->where('id', $produkId))
+          ->orderBy('tanggal', 'desc')
+          ->get();
 
         return response()->json([
             'status' => true,
@@ -117,20 +114,46 @@ class MutasiApiController extends Controller
         ]);
     }
 
-    /**
-     * Riwayat mutasi berdasarkan user tertentu.
-     */
+    // Riwayat mutasi berdasarkan user
     public function historyByUser($userId)
     {
-        $mutasis = Mutasi::with(['produkLokasi.produk:id,nama_produk', 'produkLokasi.lokasi:id,nama_lokasi'])
-            ->where('user_id', $userId)
-            ->orderBy('tanggal', 'desc')
-            ->get();
+        $mutasis = Mutasi::with([
+            'produkLokasi.produk:id,nama_produk',
+            'produkLokasi.lokasi:id,nama_lokasi'
+        ])->where('user_id', $userId)
+          ->orderBy('tanggal', 'desc')
+          ->get();
 
         return response()->json([
             'status' => true,
             'message' => 'Riwayat mutasi user berhasil diambil',
             'data' => $mutasis
+        ]);
+    }
+    public function destroy($id)
+    {
+        $mutasi = Mutasi::findOrFail($id);
+
+        // Update stok sebelum hapus mutasi
+        $produkLokasi = $mutasi->produkLokasi;
+        if ($mutasi->jenis_mutasi === 'masuk') {
+            if ($produkLokasi->stok < $mutasi->jumlah) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Tidak bisa menghapus mutasi karena stok kurang'
+                ], 400);
+            }
+            $produkLokasi->stok -= $mutasi->jumlah;
+        } else { // keluar
+            $produkLokasi->stok += $mutasi->jumlah;
+        }
+        $produkLokasi->save();
+
+        $mutasi->delete();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Mutasi berhasil dihapus'
         ]);
     }
 }

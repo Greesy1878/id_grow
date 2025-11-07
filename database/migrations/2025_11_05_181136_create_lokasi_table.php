@@ -11,7 +11,11 @@ return new class extends Migration
         Schema::create('lokasi', function (Blueprint $table) {
             $table->id();
             $table->string('nama_lokasi');
+            $table->string('kode_lokasi')->unique();
             $table->string('alamat')->nullable();
+            $table->string('keterangan')->nullable();
+            $table->string('tipe');
+            $table->integer('kapasitas')->default(0);
             $table->timestamps();
         });
     }

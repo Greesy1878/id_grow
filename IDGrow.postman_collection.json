@@ -1,0 +1,198 @@
+{
+  "info": {
+    "_postman_id": "idgrow-api-001",
+    "name": "IDGrow API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Postman Collection untuk REST API IDGrow"
+  },
+  "item": [
+    {
+      "name": "Register",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Test User\",\n  \"email\": \"test@example.com\",\n  \"password\": \"password\",\n  \"password_confirmation\": \"password\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/register",
+          "host": ["{{base_url}}"],
+          "path": ["register"]
+        }
+      }
+    },
+    {
+      "name": "Login",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"password\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/login",
+          "host": ["{{base_url}}"],
+          "path": ["login"]
+        }
+      }
+    },
+    {
+      "name": "Logout",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/logout",
+          "host": ["{{base_url}}"],
+          "path": ["logout"]
+        }
+      }
+    },
+    {
+      "name": "Get Produk",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/produk",
+          "host": ["{{base_url}}"],
+          "path": ["produk"]
+        }
+      }
+    },
+    {
+      "name": "Create Produk",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"kode_produk\": \"PRD001\",\n  \"nama_produk\": \"Produk Test\",\n  \"kategori\": \"Kategori A\",\n  \"satuan\": \"pcs\",\n  \"deskripsi\": \"Deskripsi produk\",\n  \"harga\": 10000,\n  \"min_stok\": 5,\n  \"sku\": \"SKU001\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/produk",
+          "host": ["{{base_url}}"],
+          "path": ["produk"]
+        }
+      }
+    },
+    {
+      "name": "Update Produk",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nama_produk\": \"Produk Update\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/produk/1",
+          "host": ["{{base_url}}"],
+          "path": ["produk","1"]
+        }
+      }
+    },
+    {
+      "name": "Delete Produk",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/produk/1",
+          "host": ["{{base_url}}"],
+          "path": ["produk","1"]
+        }
+      }
+    },
+    {
+      "name": "Get Lokasi",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/lokasi",
+          "host": ["{{base_url}}"],
+          "path": ["lokasi"]
+        }
+      }
+    },
+    {
+      "name": "Create Lokasi",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"kode_lokasi\": \"LOC001\",\n  \"nama_lokasi\": \"Gudang A\",\n  \"keterangan\": \"Lokasi utama\",\n  \"tipe\": \"gudang\",\n  \"alamat\": \"Jl. Contoh No.1\",\n  \"kapasitas\": 100\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/lokasi",
+          "host": ["{{base_url}}"],
+          "path": ["lokasi"]
+        }
+      }
+    }
+  ]
+}

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('nama'); // ganti dari 'name' agar sesuai instruksi soal
+            $table->string('name'); // ganti dari 'name' agar sesuai instruksi soal
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');

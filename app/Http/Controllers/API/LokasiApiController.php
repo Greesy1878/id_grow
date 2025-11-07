@@ -20,6 +20,10 @@ class LokasiApiController extends Controller
             'kode_lokasi' => 'required|string|max:100|unique:lokasi,kode_lokasi',
             'nama_lokasi' => 'required|string|max:255',
             'keterangan' => 'nullable|string',
+            'tipe' => 'required|string',
+            'alamat' => 'nullable|string', 
+            'kapasitas' => 'required|integer|min:0',
+            
         ]);
 
         $lokasi = Lokasi::create($validated);
@@ -45,6 +49,10 @@ class LokasiApiController extends Controller
             'kode_lokasi' => 'required|string|max:100|unique:lokasi,kode_lokasi,' . $lokasi->id,
             'nama_lokasi' => 'required|string|max:255',
             'keterangan' => 'nullable|string',
+            'tipe' => 'required|string',
+            'alamat' => 'nullable|string', 
+            'kapasitas' => 'required|integer|min:0',
+            
         ]);
 
         $lokasi->update($validated);
